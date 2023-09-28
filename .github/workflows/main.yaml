@@ -9,12 +9,14 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Hello world action step
-        uses: ./ # Uses an action in the root directory
-        id: hello
-        env:
-          OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
-          OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
-        with:
-          who-to-greet: 'Mona the Octocat'
+      - name: get ip
+        run: curl ifconfig.me
+#      - name: Hello world action step
+#        uses: ./ # Uses an action in the root directory
+#        id: hello
+#        env:
+#          OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
+#          OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
+#        with:
+#          who-to-greet: 'Mona the Octocat'
       # Use the output from the `hello` step
