@@ -18,9 +18,6 @@ outputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  env:
-    OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
-    OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
   args:
     - ${{ inputs.template_name }}
     - ${{ inputs.parameters }}
