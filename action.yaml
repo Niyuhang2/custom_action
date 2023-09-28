@@ -1,17 +1,27 @@
 # action.yml
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'call OB Farm to run task'
+description: ''
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  template_name:
+    description: 'template_name'
     required: true
-    default: 'World'
+  parameters:
+    description: 'parameters'
+    required: true
+  timeout:
+    description: 'timeout'
+    required: false
+    default: '3600'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  success:
+    description: 'the status for the task'
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  env:
+    OBFARM_HOST: ${{ secrets.obfarm_host }}
+    OBFARM_TOKEN: ${{ secrets.obfarm_token }}
   args:
-    - ${{ inputs.who-to-greet }}
+    - ${{ inputs.template_name }}
+    - ${{ inputs.parameters }}
 
