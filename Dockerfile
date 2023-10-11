@@ -6,4 +6,4 @@ RUN pip3 install requests -i https://mirrors.aliyun.com/pypi/simple/
 COPY ob_farm.py /ob_farm.py
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["python3", "ob_farm.py"]
+ENTRYPOINT ["python3", "-u", "ob_farm.py"]
