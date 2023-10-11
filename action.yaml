@@ -21,4 +21,5 @@ runs:
   args:
     - ${{ inputs.template_name }}
     - ${{ inputs.parameters }}
+    - ${{ inputs.timeout }}
 

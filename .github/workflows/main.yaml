@@ -11,12 +11,14 @@ jobs:
         uses: actions/checkout@v4
       - name: get ip
         run: curl ifconfig.me
-#      - name: Hello world action step
-#        uses: ./ # Uses an action in the root directory
-#        id: hello
-#        env:
-#          OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
-#          OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
-#        with:
-#          who-to-greet: 'Mona the Octocat'
+      - name: run odc_ut
+        uses: ./ # Uses an action in the root directory
+        id: run odc_ut
+        env:
+          OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
+          OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
+        with:
+          template_name: odc_ut
+          parameters: COMMIT=1c02c0063c08a3ef7c1371ed77c3c7ec3196c08c
+
       # Use the output from the `hello` step
