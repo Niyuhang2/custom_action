@@ -13,7 +13,7 @@ jobs:
         run: curl ifconfig.me
       - name: run odc_ut
         uses: ./ # Uses an action in the root directory
-        id: run odc_ut
+        id: odc_ut
         env:
           OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
           OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
