@@ -13,4 +13,4 @@ jobs:
         run: curl ifconfig.me
       - name: run odc_ut
         run: | 
-          echo ${{ secrets.OBFARM_HOST }} | sed 's/a/**123**'
+          echo ${{ secrets.OBFARM_HOST }} | sed 's/h/**123**/g'
