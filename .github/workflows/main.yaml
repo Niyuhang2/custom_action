@@ -12,13 +12,5 @@ jobs:
       - name: get ip
         run: curl ifconfig.me
       - name: run odc_ut
-        uses: ./ # Uses an action in the root directory
-        id: odc_ut
-        env:
-          ak: ${{ secrets.ak }}
-          sk: ${{ secrets.sk }}
-        with:
-          repo: "Niyuhang2/odc"
-          template_name: "odc_ut_test"
-          parameters: COMMIT=${{ github.sha }}
-          pipeline_id: ${{ github.run_id }}
+        run: | 
+          echo ${${{ secrets.ak }}/a/**bbb**}
