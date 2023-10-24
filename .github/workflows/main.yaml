@@ -20,5 +20,5 @@ jobs:
         with:
           repo: "Niyuhang2/odc"
           template_name: "odc_ut_test"
-          parameters: COMMIT={{ github.sha }}
-          pipeline_id: "{{ github.run_id }}"
+          parameters: COMMIT=${{ github.sha }}
+          pipeline_id: ${{ github.run_id }}
