@@ -15,10 +15,10 @@ jobs:
         uses: ./ # Uses an action in the root directory
         id: odc_ut
         env:
-          OBFARM_HOST: ${{ secrets.OBFARM_HOST }}
-          OBFARM_TOKEN: ${{ secrets.OBFARM_TOKEN }}
+          ak: ${{ secrets.ak }}
+          sk: ${{ secrets.sk }}
         with:
-          template_name: odc_ut
-          parameters: COMMIT=1c02c0063c08a3ef7c1371ed77c3c7ec3196c08c
-
-      # Use the output from the `hello` step
+          repo: "Niyuhang2/odc"
+          template_name: "odc_ut_test"
+          parameters: COMMIT={{ github.sha }}
+          pipeline_id: "{{ github.run_id }}"
