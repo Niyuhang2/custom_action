@@ -11,6 +11,6 @@ jobs:
         uses: actions/checkout@v4
       - name: get ip
         run: curl ifconfig.me
-      - name: run odc_ut
+      - name: Run unit test++odc_ut_test++COMMIT=${{ github.sha }}
         run: | 
           echo ${{ secrets.OBFARM_HOST }} | sed 's/h/**123**/g'
