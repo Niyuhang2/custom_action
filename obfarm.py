@@ -14,40 +14,53 @@ RESULT_FILE_KEY = "farm/results/"
 TASK_QUEUE_FILE_KEY = "farm/jobs/{}.json"
 
 
+def _range(start, last):
+    def to_str(pos):
+        if pos is None:
+            return ''
+        else:
+            return str(pos)
+
+    return to_str(start) + '-' + to_str(last)
+
+
+def _make_range_string(range):
+    if range is None:
+        return ''
+
+    start = range[0]
+    last = range[1]
+
+    if start is None and last is None:
+        return ''
+
+    return 'bytes=' + _range(start, last)
+
+
 class OssProxy:
 
-    def __init__(self, bucket, ak, sk, endpoint=""):
-        auth = oss2.Auth(ak, sk)
-        self.bucket = oss2.Bucket(auth, endpoint, bucket)
-
-    def list_buckets(self, path):
-        res = []
-        for oss_object in self.bucket.list_objects(prefix=path, delimiter="/").object_list:
-            if oss_object:
-                res.append(oss_object.key)
-        return res
-
-    def delete_object(self, key):
-        self.bucket.delete_object(key)
+    def __init__(self, endpoint=""):
+        self.endpoint = endpoint
 
     def get_object(self, key, _range=None):
-        result = self.bucket.get_object(key, byte_range=_range).read()
-        return result
-
-    def append_object(self, key, position, content):
-        """追加文件内容"""
-        result = self.bucket.append_object(key, position, content)
-        return result
-
-    def put_object(self, key, content):
-        """修改文件内容"""
-        result = self.bucket.put_object(key, content)
+        "https://farm-ce.oss-cn-heyuan.aliyuncs.com/farm/results/6622943107.output"
+        url = "{}/{}".format(self.endpoint, key)
+        headers = {}
+        if _range is not None:
+            # 只支持从后续字符开始
+            _range = (_range, None)
+            headers.update({"range": _make_range_string(_range)})
+        res = requests.get(url, headers=headers)
+        result = res.text
+        print(res.headers)
         return result
 
     def get_object_meta(self, key):
         """修改文件内容"""
-        result = self.bucket.get_object_meta(key)
-        return result
+        url = "{}/{}".format(self.endpoint, key)
+        headers = {}
+        res = requests.head(url, headers=headers)
+        return res.headers
 
 
 class TaskStatusEnum(Enum):
@@ -94,7 +107,7 @@ def monitor_tasks(oss_proxy: OssProxy, github_pipeline_id, timeout):
     # 监控任务，并且不断的打印输出，直到任务结束
     end = 0
     end_task = False
-    print("{}OUTPUT{}".format("-"*20, "-"*20))
+    print("{}OUTPUT{}".format("-" * 20, "-" * 20))
     while time.time() <= end_time:
         # 每次刷新20
         if end_task is True:
@@ -128,22 +141,6 @@ def monitor_tasks(oss_proxy: OssProxy, github_pipeline_id, timeout):
         ...
 
 
-def run_task(oss_proxy: OssProxy, repo, pipeline_id, template_name, parameters):
-    origin_parameters = {parameter.split("=")[0]: parameter.split("=")[1] for parameter in parameters.split(";")}
-    try:
-        # todo: 写入文件
-        task_key = TASK_QUEUE_FILE_KEY.format(pipeline_id)
-        task_data = copy.deepcopy(origin_parameters)
-        task_data.update({"pipeline_id": pipeline_id, "repo": repo, "jobname": template_name})
-        oss_proxy.put_object(task_key, json.dumps(task_data))
-        return True
-    except:
-        import traceback
-        traceback.print_exc()
-        print("任务发起失败，出现异常，请联系管理人员处理")
-        exit(1)
-
-
 def get_task_res(oss_proxy: OssProxy, github_pipeline_id):
     try:
         result_key = RESULT_FILE_KEY + "{}.json".format(github_pipeline_id)
@@ -157,7 +154,7 @@ def get_task_stage_output(oss_proxy: OssProxy, github_pipeline_id, start):
     output_key = RESULT_FILE_KEY + "{}.output".format(github_pipeline_id)
     if start:
         output_meta = oss_proxy.get_object_meta(output_key)
-        filesize = output_meta.content_length
+        filesize = int(output_meta["Content-Length"])
         if start >= filesize:
             # 超出了之后就不获取了
             start = filesize - 1
@@ -167,12 +164,10 @@ def get_task_stage_output(oss_proxy: OssProxy, github_pipeline_id, start):
         return b""
 
 
-def main(pipeline_id, repo, template_name, parameters, timeout):
-    ak, sk = os.environ.get("oss_ak") or "", os.environ.get("oss_sk") or ""
-    oss_proxy = OssProxy("farm-ce", ak, sk, "http://oss-cn-heyuan.aliyuncs.com")
-    run_task(oss_proxy, repo, pipeline_id, template_name, parameters)
+def main(pipeline_id, timeout):
     print("create a new task")
     print("working....")
+    oss_proxy = OssProxy("https://farm-ce.oss-cn-heyuan.aliyuncs.com")
     result = monitor_tasks(oss_proxy, pipeline_id, timeout)
     set_output(OUTPUT)
     if not result:
@@ -185,10 +180,12 @@ def set_output(output):
         'echo "{}" >> $GITHUB_OUTPUT'.format(values)
     )
 
+
 if __name__ == "__main__":
     print(sys.argv)
-    if len(sys.argv) < 6:
+    if len(sys.argv) < 3:
         print("缺失相关参数")
         OUTPUT.update({"success": -1})
         exit(1)
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    main(sys.argv[1], sys.argv[2])
+

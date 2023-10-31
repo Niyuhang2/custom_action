@@ -1,9 +1,9 @@
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  hello_world_job:
+  Unit Test (ODC):
     runs-on: ubuntu-latest
-    name: A job to say hello for test
+    name: Unit Test (ODC)
     steps:
       # To use this repository's private action,
       # you must check out the repository
@@ -12,5 +12,5 @@ jobs:
       - name: get ip
         run: curl ifconfig.me
       - name: Run unit test++odc_ut_test++COMMIT=${{ github.sha }}
-        run: | 
-          echo ${{ secrets.OBFARM_HOST }} | sed 's/h/**123**/g'
+        uses: ./ # Uses an action in the root directory
+        run: echo ${{ github.event.pull_request.head.sha }}
