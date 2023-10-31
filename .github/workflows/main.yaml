@@ -12,5 +12,4 @@ jobs:
       - name: get ip
         run: curl ifconfig.me
       - name: Run unit test++odc_ut_test++COMMIT=${{ github.sha }}
-        uses: ./ # Uses an action in the root directory
         run: echo ${{ github.event.pull_request.head.sha }}
