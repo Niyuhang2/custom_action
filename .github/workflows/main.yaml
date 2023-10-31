@@ -1,7 +1,7 @@
 on: [push, pull_request]
 
 jobs:
-  Unit Test (ODC):
+  test:
     runs-on: ubuntu-latest
     name: Unit Test (ODC)
     steps:
