@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    if: ${{ github.event.repository.name == 'oceanbase/oceanbase' }}
+    if: ${{ github.event.repository.name == 'Niyuhang2/custom_action' }}
     name: Unit Test (ODC)
     steps:
       # To use this repository's private action,
