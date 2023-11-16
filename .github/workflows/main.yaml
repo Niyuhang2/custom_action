@@ -3,6 +3,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: ${{ github.event.repository.name == 'oceanbase/oceanbase' }}
     name: Unit Test (ODC)
     steps:
       # To use this repository's private action,
@@ -11,6 +12,5 @@ jobs:
         uses: actions/checkout@v4
       - name: get ip
         run: curl ifconfig.me
-      - name:test
-        if: ${{ github.event.repository.name == 'oceanbase/oceanbase' }}
+      - name: test
         run: eho "123"  
