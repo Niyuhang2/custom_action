@@ -13,4 +13,4 @@ jobs:
       - name: get ip
         run: curl ifconfig.me
       - name: test
-        run: eho "${{ github.event.repository.name }}"
+        run: echo "${{ github.event.repository.name }}"
