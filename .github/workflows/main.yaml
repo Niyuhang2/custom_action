@@ -13,4 +13,4 @@ jobs:
       - name: get ip
         run: curl ifconfig.me
       - name: test
-        run: echo "${{ github.event.repository.name }}"
+        run: echo "${{ github.repository_owner }}"
