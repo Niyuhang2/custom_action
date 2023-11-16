@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-#    if: ${{ github.event.repository.name == 'Niyuhang2/custom_action' }}
+    if: ${{ github.repository_owner == 'Niyuhang2' }}
     name: Unit Test (ODC)
     steps:
       # To use this repository's private action,
