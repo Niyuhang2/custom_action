@@ -12,5 +12,6 @@ jobs:
         uses: actions/checkout@v4
       - name: get ip
         run: curl ifconfig.me
-      - name: test
-        run: echo "${{ github.repository_owner }}"
+      - name: action by obfarm
+        uses: ./
+        id: farm

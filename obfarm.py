@@ -182,10 +182,6 @@ def set_output(output):
 
 
 if __name__ == "__main__":
-    print(sys.argv)
-    if len(sys.argv) < 3:
-        print("缺失相关参数")
-        OUTPUT.update({"success": -1})
-        exit(1)
-    main(sys.argv[1], sys.argv[2])
-
+    from art import text2art
+    logo = text2art("OceanBase Farm")
+    print(logo)
