@@ -3,6 +3,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'Niyuhang2' }}
     name: Unit Test (ODC)
     steps:
       # To use this repository's private action,
@@ -11,5 +12,6 @@ jobs:
         uses: actions/checkout@v4
       - name: get ip
         run: curl ifconfig.me
-      - name: Run unit test++odc_ut_test++COMMIT=${{ github.sha }}
-        run: echo ${{ github.event.pull_request.head.sha }}
+      - name: action by obfarm
+        uses: ./
+        id: farm
